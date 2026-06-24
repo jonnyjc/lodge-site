@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lodge — a room with the light left on</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dusk-deep:#101F1B;
+    --dusk:#1B342D;
+    --dusk-mid:#27483F;
+    --lamp:#E8A85A;
+    --lamp-soft:#F2C98A;
+    --lamp-glow:rgba(232,168,90,.55);
+    --stone:#ECE6D8;
+    --stone-deep:#DFD6C4;
+    --stone-line:#CFC4AE;
+    --ink:#1C2420;
+    --ink-soft:#54605A;
+    --clay:#A85F3C;
+    --moss:#3C5A4E;
+    --paper-card:#F6F2E9;
+    --r:14px;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Hanken Grotesk',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--stone);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;font-weight:500;line-height:1.08;letter-spacing:-.01em}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{
+    font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--clay);
+  }
+  .eyebrow.light{color:var(--lamp)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  :focus-visible{outline:3px solid var(--lamp);outline-offset:2px;border-radius:4px}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:14px 24px;border-radius:999px;font-weight:600;font-size:15px;
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    white-space:nowrap;
+  }
+  .btn-lamp{background:var(--lamp);color:var(--dusk-deep);box-shadow:0 0 0 0 var(--lamp-glow)}
+  .btn-lamp:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px var(--lamp-glow)}
+  .btn-ghost{border:1.5px solid rgba(236,230,216,.45);color:var(--stone)}
+  .btn-ghost:hover{background:rgba(236,230,216,.1)}
+  .btn-ink{background:var(--ink);color:var(--stone)}
+  .btn-ink:hover{transform:translateY(-2px)}
+  .btn-line{border:1.5px solid var(--ink);color:var(--ink)}
+  .btn-line:hover{background:var(--ink);color:var(--stone)}
+  .btn-sm{padding:10px 18px;font-size:14px}
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(16,31,27,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(236,230,216,.1);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .brand{display:flex;align-items:center;gap:11px;color:var(--stone);cursor:pointer}
+  .brand .mark{position:relative;width:30px;height:30px;flex:none}
+  .brand .mark svg{width:100%;height:100%}
+  .brand .word{font-family:'Fraunces';font-weight:600;font-size:23px;letter-spacing:-.02em}
+  .brand .word b{color:var(--lamp);font-weight:600}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{color:rgba(236,230,216,.78);font-size:15px;font-weight:500;transition:color .15s}
+  .nav-links a:hover,.nav-links a.active{color:var(--stone)}
+  .nav-cta{display:flex;align-items:center;gap:14px}
+  .menu-btn{display:none;color:var(--stone);font-size:26px;line-height:1}
+  @media(max-width:860px){
+    .nav-links,.nav-cta .btn-ghost{display:none}
+    .menu-btn{display:block}
+  }
+
+  /* ---------- views ---------- */
+  .view{display:none;animation:fade .4s ease}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;color:var(--stone);overflow:hidden;
+    background:linear-gradient(180deg,var(--dusk-deep) 0%,var(--dusk) 48%,var(--dusk-mid) 100%);
+  }
+  .hero-stars{position:absolute;inset:0;pointer-events:none}
+  .hero-inner{position:relative;z-index:3;padding:74px 0 0}
+  .hero h1{font-size:clamp(40px,6.4vw,78px);font-weight:500;max-width:14ch;letter-spacing:-.025em}
+  .hero h1 em{font-style:italic;color:var(--lamp-soft)}
+  .hero .lede{
+    font-size:clamp(17px,2vw,20px);color:rgba(236,230,216,.82);
+    max-width:46ch;margin:24px 0 32px;line-height:1.5;
+  }
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-trust{
+    display:flex;gap:26px;margin-top:38px;flex-wrap:wrap;
+    font-size:13.5px;color:rgba(236,230,216,.7);
+  }
+  .hero-trust span{display:flex;align-items:center;gap:8px}
+  .hero-trust svg{width:16px;height:16px;color:var(--lamp);flex:none}
+  /* terrace */
+  .terrace{position:relative;z-index:2;margin-top:46px;width:100%;display:block}
+  .terrace svg{width:100%;height:auto;display:block}
+  @keyframes breathe{0%,100%{opacity:.95}50%{opacity:.55}}
+  @keyframes flickerable{0%,100%{opacity:.9}50%{opacity:.7}}
+  .lit-main{transform-origin:center;animation:breathe 5.5s ease-in-out infinite}
+  .glow-main{animation:breathe 5.5s ease-in-out infinite}
+  .lit-dim{animation:flickerable 7s ease-in-out infinite}
+  @media(prefers-reduced-motion:reduce){.lit-main,.glow-main,.lit-dim{animation:none}}
+
+  /* ---------- section scaffolding ---------- */
+  section{padding:90px 0}
+  .sec-head{max-width:640px;margin-bottom:50px}
+  .sec-head h2{font-size:clamp(30px,4vw,46px);margin:14px 0 0;letter-spacing:-.02em}
+  .sec-head p{font-size:18px;color:var(--ink-soft);margin-top:18px}
+
+  /* contrast / why-lodge */
+  .why{background:var(--paper-card)}
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .pillar{
+    background:var(--stone);border:1px solid var(--stone-line);border-radius:var(--r);
+    padding:34px 30px;position:relative;overflow:hidden;
+  }
+  .pillar .ic{
+    width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
+    background:var(--dusk);color:var(--lamp);margin-bottom:20px;
+  }
+  .pillar .ic svg{width:24px;height:24px}
+  .pillar h3{font-size:22px;margin-bottom:10px}
+  .pillar p{font-size:15.5px;color:var(--ink-soft)}
+  .pillar .vs{font-size:13px;color:var(--clay);font-weight:600;margin-top:16px;display:block}
+  @media(max-width:780px){.pillars{grid-template-columns:1fr}}
+
+  /* how it works (a real sequence -> numbers justified) */
+  .how{background:var(--dusk);color:var(--stone)}
+  .how .sec-head h2{color:var(--stone)}
+  .how .sec-head p{color:rgba(236,230,216,.7)}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .step{padding:30px 26px 30px 0;border-top:1px solid rgba(236,230,216,.16);position:relative}
+  .step .n{font-family:'Fraunces';font-size:15px;color:var(--lamp);font-weight:600;letter-spacing:.05em}
+  .step h4{font-size:20px;margin:16px 0 9px;color:var(--stone)}
+  .step p{font-size:14.5px;color:rgba(236,230,216,.72)}
+  @media(max-width:780px){.steps{grid-template-columns:1fr}.step{padding-right:0}}
+
+  /* ---------- listing cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:620px){.grid{grid-template-columns:1fr}}
+  .card{
+    background:var(--paper-card);border:1px solid var(--stone-line);border-radius:var(--r);
+    overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;
+    display:flex;flex-direction:column;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -22px rgba(28,36,32,.5)}
+  .card-window{
+    height:152px;position:relative;overflow:hidden;
+    background:linear-gradient(170deg,var(--dusk-deep),var(--dusk-mid));
+    display:flex;align-items:flex-end;justify-content:center;
+  }
+  .card-window svg{width:100%;height:100%;position:absolute;inset:0}
+  .card-window .price{
+    position:absolute;top:12px;right:12px;z-index:3;
+    background:var(--lamp);color:var(--dusk-deep);font-weight:700;font-size:14px;
+    padding:5px 12px;border-radius:999px;
+  }
+  .card-window .price small{font-weight:600;opacity:.7}
+  .card-body{padding:22px 22px 24px;flex:1;display:flex;flex-direction:column}
+  .card-loc{font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--clay);text-transform:uppercase}
+  .card h3{font-size:19px;margin:9px 0 12px;line-height:1.22}
+  .card .meta{font-size:14px;color:var(--ink-soft);margin-bottom:14px}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:6px}
+  .tag{font-size:12px;padding:5px 11px;border-radius:999px;background:var(--stone-deep);color:var(--moss);font-weight:600}
+  .verirow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .veri{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--moss)}
+  .veri svg{width:14px;height:14px;color:var(--moss)}
+  .veri.dbs{color:var(--clay)}.veri.dbs svg{color:var(--clay)}
+
+  /* ---------- browse layout ---------- */
+  .browse-top{background:var(--dusk);color:var(--stone);padding:54px 0 34px}
+  .browse-top h1{font-size:clamp(30px,4.4vw,46px);color:var(--stone)}
+  .browse-top p{color:rgba(236,230,216,.72);margin-top:12px;font-size:17px;max-width:52ch}
+  .filters{
+    background:var(--paper-card);border-bottom:1px solid var(--stone-line);
+    position:sticky;top:70px;z-index:30;padding:18px 0;
+  }
+  .filters-inner{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .fgroup{display:flex;flex-direction:column;gap:5px}
+  .fgroup label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  select,.chip-input{
+    font-family:inherit;font-size:14px;padding:9px 13px;border-radius:9px;
+    border:1.5px solid var(--stone-line);background:var(--stone);color:var(--ink);font-weight:500;
+  }
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{
+    font-size:13px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--stone-line);
+    background:var(--stone);color:var(--ink-soft);font-weight:600;transition:all .15s;
+  }
+  .chip[aria-pressed="true"]{background:var(--moss);border-color:var(--moss);color:var(--stone)}
+  .result-count{margin-left:auto;font-size:14px;color:var(--ink-soft);font-weight:600}
+  .browse-body{padding:40px 0 90px}
+  .empty{
+    text-align:center;padding:70px 20px;color:var(--ink-soft);
+    border:1.5px dashed var(--stone-line);border-radius:var(--r);background:var(--paper-card);
+  }
+  .empty h3{font-size:24px;color:var(--ink);margin-bottom:10px}
+
+  /* ---------- detail ---------- */
+  .detail-hero{background:var(--dusk);color:var(--stone);padding:42px 0 0}
+  .back{display:inline-flex;align-items:center;gap:7px;color:rgba(236,230,216,.75);font-size:14px;font-weight:600;margin-bottom:26px}
+  .back:hover{color:var(--stone)}
+  .detail-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:40px;align-items:start}
+  @media(max-width:900px){.detail-grid{grid-template-columns:1fr;gap:28px}}
+  .detail-window{
+    height:320px;border-radius:var(--r);overflow:hidden;position:relative;
+    background:linear-gradient(170deg,var(--dusk-deep),var(--dusk-mid));margin-bottom:30px;
+  }
+  .detail-window svg{position:absolute;inset:0;width:100%;height:100%}
+  .detail-head h1{font-size:clamp(28px,4vw,40px);color:var(--stone);margin-bottom:10px;letter-spacing:-.02em}
+  .detail-head .loc{color:var(--lamp);font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-size:13px}
+  .detail-body{background:var(--stone);padding:54px 0 90px}
+  .block{margin-bottom:42px}
+  .block h3{font-size:24px;margin-bottom:16px}
+  .block p{color:var(--ink-soft);font-size:16px;max-width:62ch}
+  .rhythm{display:grid;gap:10px;margin-top:6px}
+  .rhythm li{display:flex;gap:12px;align-items:flex-start;list-style:none;font-size:15.5px;color:var(--ink)}
+  .rhythm svg{width:20px;height:20px;color:var(--moss);flex:none;margin-top:2px}
+  .specs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--stone-line);border:1px solid var(--stone-line);border-radius:var(--r);overflow:hidden}
+  .spec{background:var(--paper-card);padding:18px 20px}
+  .spec .k{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);font-weight:700}
+  .spec .v{font-size:17px;font-weight:600;margin-top:4px;font-family:'Fraunces'}
+  /* sidebar */
+  .side{position:sticky;top:96px}
+  .side-card{background:var(--paper-card);border:1px solid var(--stone-line);border-radius:var(--r);padding:28px}
+  .side-card .rentbig{font-family:'Fraunces';font-size:34px;font-weight:600}
+  .side-card .rentbig small{font-size:15px;color:var(--ink-soft);font-weight:500;font-family:'Hanken Grotesk'}
+  .side-card .avail{font-size:14px;color:var(--ink-soft);margin:4px 0 22px}
+  .side-card .btn{width:100%;justify-content:center;margin-bottom:10px}
+  .church-badge{
+    display:flex;gap:13px;align-items:center;background:var(--dusk);color:var(--stone);
+    border-radius:12px;padding:16px 18px;margin-top:18px;
+  }
+  .church-badge svg{width:30px;height:30px;color:var(--lamp);flex:none}
+  .church-badge .t{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--lamp);font-weight:700}
+  .church-badge .n{font-size:15px;font-weight:600}
+  .safety-mini{margin-top:18px;font-size:13px;color:var(--ink-soft);display:flex;gap:9px;align-items:flex-start}
+  .safety-mini svg{width:18px;height:18px;color:var(--moss);flex:none;margin-top:1px}
+
+  /* ---------- list-a-room form ---------- */
+  .form-wrap{max-width:760px;margin:0 auto}
+  .form-card{background:var(--paper-card);border:1px solid var(--stone-line);border-radius:var(--r);padding:40px}
+  .field{margin-bottom:24px}
+  .field label{display:block;font-size:14px;font-weight:700;margin-bottom:8px}
+  .field .hint{font-weight:400;color:var(--ink-soft);font-size:13px}
+  .field input,.field textarea,.field select{
+    width:100%;font-family:inherit;font-size:15px;padding:13px 15px;border-radius:10px;
+    border:1.5px solid var(--stone-line);background:var(--stone);color:var(--ink);
+  }
+  .field textarea{min-height:120px;resize:vertical}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:560px){.field-row{grid-template-columns:1fr}}
+  .price-banner{
+    background:var(--dusk);color:var(--stone);border-radius:12px;padding:20px 24px;
+    margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .price-banner .big{font-family:'Fraunces';font-size:26px;font-weight:600;color:var(--lamp)}
+  .price-banner p{font-size:13.5px;color:rgba(236,230,216,.75);max-width:40ch}
+
+  /* ---------- generic content sections ---------- */
+  .lede-block{max-width:720px}
+  .lede-block h1{font-size:clamp(32px,5vw,54px);margin-bottom:20px;letter-spacing:-.02em}
+  .lede-block .big-lede{font-size:20px;color:var(--ink-soft);line-height:1.55}
+  .twocol{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;margin-top:50px}
+  @media(max-width:760px){.twocol{grid-template-columns:1fr}}
+  .feat{background:var(--paper-card);border:1px solid var(--stone-line);border-radius:var(--r);padding:30px}
+  .feat .ic{width:42px;height:42px;border-radius:11px;background:var(--dusk);color:var(--lamp);display:grid;place-items:center;margin-bottom:18px}
+  .feat .ic svg{width:22px;height:22px}
+  .feat h3{font-size:21px;margin-bottom:10px}
+  .feat p{color:var(--ink-soft);font-size:15.5px}
+
+  /* for churches */
+  .church-hero{background:linear-gradient(160deg,var(--dusk-deep),var(--dusk-mid));color:var(--stone)}
+  .church-hero .lede-block h1{color:var(--stone)}
+  .church-hero .big-lede{color:rgba(236,230,216,.82)}
+  .tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:46px}
+  @media(max-width:680px){.tier-grid{grid-template-columns:1fr}}
+  .tier{border:1.5px solid var(--stone-line);border-radius:var(--r);padding:32px;background:var(--paper-card)}
+  .tier.feature{border-color:var(--lamp);box-shadow:0 0 0 1px var(--lamp)}
+  .tier .price-tag{font-family:'Fraunces';font-size:30px;font-weight:600}
+  .tier .price-tag small{font-size:14px;color:var(--ink-soft);font-family:'Hanken Grotesk';font-weight:500}
+  .tier h3{font-size:22px;margin:6px 0 4px}
+  .tier ul{list-style:none;margin:18px 0 24px;display:grid;gap:11px}
+  .tier li{display:flex;gap:10px;font-size:14.5px;color:var(--ink)}
+  .tier li svg{width:18px;height:18px;color:var(--moss);flex:none;margin-top:2px}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--dusk-deep);color:rgba(236,230,216,.7);padding:64px 0 40px}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:34px}
+  @media(max-width:760px){.foot-grid{grid-template-columns:1fr 1fr}}
+  footer h4{font-family:'Hanken Grotesk';font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--lamp);font-weight:700;margin-bottom:16px}
+  footer a{display:block;font-size:14.5px;color:rgba(236,230,216,.7);margin-bottom:10px;transition:color .15s}
+  footer a:hover{color:var(--stone)}
+  .foot-brand .word{font-family:'Fraunces';font-size:24px;color:var(--stone);font-weight:600}
+  .foot-brand p{font-size:14px;margin-top:12px;max-width:34ch;line-height:1.5}
+  .foot-bottom{border-top:1px solid rgba(236,230,216,.12);margin-top:44px;padding-top:24px;font-size:12.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  /* toast */
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(120px);
+    background:var(--ink);color:var(--stone);padding:15px 26px;border-radius:999px;
+    font-size:14.5px;font-weight:500;z-index:200;transition:transform .35s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 14px 40px -12px rgba(0,0,0,.5);max-width:90vw;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast b{color:var(--lamp)}
+
+  /* ---------- auth / account ---------- */
+  .nav-user{display:none;align-items:center;gap:14px}
+  .nav-user.on{display:flex}
+  .nav-cta.off{display:none}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--lamp);color:var(--dusk-deep);
+    display:grid;place-items:center;font-weight:700;font-size:14px;font-family:'Hanken Grotesk'}
+  .saved-link{display:flex;align-items:center;gap:7px;color:rgba(236,230,216,.78);font-size:15px;font-weight:500;cursor:pointer}
+  .saved-link:hover{color:var(--stone)}
+  .saved-link .cnt{background:var(--lamp);color:var(--dusk-deep);font-size:11px;font-weight:700;
+    min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 5px}
+  .modal-bg{position:fixed;inset:0;background:rgba(16,31,27,.72);backdrop-filter:blur(4px);
+    z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+  .modal-bg.show{display:flex;animation:fade .25s ease}
+  .modal{background:var(--stone);border-radius:18px;max-width:440px;width:100%;padding:38px;position:relative}
+  .modal h2{font-size:28px;margin-bottom:6px}
+  .modal p.sub{color:var(--ink-soft);font-size:15px;margin-bottom:24px}
+  .modal .seg{display:flex;gap:8px;background:var(--stone-deep);padding:5px;border-radius:11px;margin-bottom:22px}
+  .modal .seg button{flex:1;padding:10px;border-radius:8px;font-size:14px;font-weight:600;color:var(--ink-soft)}
+  .modal .seg button.on{background:var(--stone);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .modal .field{margin-bottom:16px}
+  .modal .x{position:absolute;top:18px;right:20px;font-size:24px;color:var(--ink-soft);line-height:1}
+  .modal .demo-note{font-size:12.5px;color:var(--ink-soft);margin-top:16px;text-align:center;line-height:1.5}
+
+  /* save heart on cards */
+  .save-btn{position:absolute;top:12px;left:12px;z-index:4;width:34px;height:34px;border-radius:50%;
+    background:rgba(16,31,27,.55);backdrop-filter:blur(4px);display:grid;place-items:center;transition:transform .15s,background .15s}
+  .save-btn:hover{transform:scale(1.1);background:rgba(16,31,27,.8)}
+  .save-btn svg{width:18px;height:18px;color:var(--stone);transition:all .15s}
+  .save-btn.saved svg{color:var(--lamp);fill:var(--lamp)}
+
+  /* saved view */
+  .saved-head{background:var(--dusk);color:var(--stone);padding:54px 0 34px}
+  .saved-head h1{font-size:clamp(30px,4.4vw,46px);color:var(--stone)}
+  .saved-head p{color:rgba(236,230,216,.72);margin-top:12px;font-size:17px}
+
+  /* form: toggle switch */
+  .switch-row{display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:14px 16px;border:1.5px solid var(--stone-line);border-radius:10px;background:var(--stone)}
+  .switch-row .lab{font-size:15px;font-weight:600}
+  .switch-row .lab small{display:block;font-weight:400;color:var(--ink-soft);font-size:13px;margin-top:2px}
+  .switch{width:48px;height:28px;border-radius:999px;background:var(--stone-line);position:relative;
+    transition:background .2s;flex:none;cursor:pointer}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;
+    background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .switch[aria-checked="true"]{background:var(--moss)}
+  .switch[aria-checked="true"]::after{transform:translateX(20px)}
+
+  /* form: segmented preference */
+  .seg-pref{display:flex;gap:8px;background:var(--stone);padding:5px;border-radius:11px;border:1.5px solid var(--stone-line)}
+  .seg-pref button{flex:1;padding:11px;border-radius:8px;font-size:14px;font-weight:600;color:var(--ink-soft);transition:all .15s}
+  .seg-pref button.on{background:var(--moss);color:var(--stone)}
+
+  .tag.pref{background:var(--dusk);color:var(--lamp-soft)}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand" onclick="go('home')" role="button" tabindex="0">
+      <span class="mark">
+        <svg viewBox="0 0 30 30" fill="none">
+          <path d="M3 14 L15 4 L27 14 V27 H3 Z" stroke="#ECE6D8" stroke-width="1.6" stroke-linejoin="round"/>
+          <rect x="12" y="18" width="6" height="9" fill="#E8A85A"/>
+          <rect x="12" y="18" width="6" height="9" fill="#E8A85A" filter="url(#g)"/>
+          <defs><filter id="g"><feGaussianBlur stdDeviation="1.4"/></filter></defs>
+        </svg>
+      </span>
+      <span class="word">Lodge</span>
+    </div>
+    <nav class="nav-links">
+      <a onclick="go('browse')" data-nav="browse">Find a room</a>
+      <a onclick="go('list')" data-nav="list">List a room</a>
+      <a onclick="go('trust')" data-nav="trust">Trust &amp; safety</a>
+      <a onclick="go('churches')" data-nav="churches">For churches</a>
+    </nav>
+    <div class="nav-cta" id="nav-cta-guest">
+      <a class="saved-link" onclick="go('saved')" style="margin-right:4px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.29 1.51 4.04 3 5.5l7 7 7-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        Saved <span class="cnt" id="saved-count">0</span>
+      </a>
+      <a class="btn btn-ghost btn-sm" onclick="openAuth('in')">Sign in</a>
+      <a class="btn btn-lamp btn-sm" onclick="go('list')">List a room</a>
+    </div>
+    <div class="nav-user" id="nav-user">
+      <a class="saved-link" onclick="go('saved')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.29 1.51 4.04 3 5.5l7 7 7-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        Saved <span class="cnt" id="saved-count-2">0</span>
+      </a>
+      <a class="btn btn-lamp btn-sm" onclick="go('list')">List a room</a>
+      <span class="avatar" id="user-avatar" title="Signed in" onclick="signOut()" style="cursor:pointer">J</span>
+    </div>
+    <button class="menu-btn" onclick="go('browse')" aria-label="Find a room">☰</button>
+  </div>
+</header>
+
+<!-- ============ HOME ============ -->
+<main id="home" class="view active">
+  <section class="hero" style="padding:0">
+    <div class="hero-stars" id="stars"></div>
+    <div class="wrap hero-inner">
+      <span class="eyebrow light">Christian houseshares across the UK</span>
+      <h1 style="margin-top:18px">A spare room, and the&nbsp;light <em>left on</em> for you.</h1>
+      <p class="lede">Lodge connects Christians looking for a room with households who have one going spare — matched on the things that actually make a home work, and verified through the church you'd be living near.</p>
+      <div class="hero-cta">
+        <a class="btn btn-lamp" onclick="go('browse')">Find a room
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn-ghost" onclick="go('list')">I've got a room</a>
+      </div>
+      <div class="hero-trust">
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg> Every profile ID-verified</span>
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg> Partner churches confirm their own homes</span>
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> People moderate every house</span>
+      </div>
+    </div>
+    <!-- terrace at dusk -->
+    <div class="terrace">
+      <svg viewBox="0 0 1440 240" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <!-- houses silhouette -->
+        <g fill="#0C1815">
+          <!-- h1 -->
+          <path d="M0 240 V120 L70 120 L70 90 L140 90 L140 240 Z"/>
+          <!-- h2 taller -->
+          <path d="M140 240 V70 L210 30 L280 70 L280 240 Z"/>
+          <rect x="225" y="44" width="10" height="22"/>
+          <!-- h3 -->
+          <path d="M280 240 V110 L350 110 L350 80 L420 80 L420 240 Z"/>
+          <!-- h4 (the lit one) -->
+          <path d="M420 240 V96 L500 50 L580 96 L580 240 Z"/>
+          <rect x="535" y="62" width="11" height="26"/>
+          <!-- h5 -->
+          <path d="M580 240 V120 L650 120 L650 86 L720 86 L720 240 Z"/>
+          <!-- h6 tall -->
+          <path d="M720 240 V64 L800 24 L880 64 L880 240 Z"/>
+          <rect x="828" y="40" width="11" height="22"/>
+          <!-- h7 -->
+          <path d="M880 240 V112 L950 112 L950 82 L1020 82 L1020 240 Z"/>
+          <!-- h8 -->
+          <path d="M1020 240 V86 L1095 44 L1170 86 L1170 240 Z"/>
+          <!-- h9 -->
+          <path d="M1170 240 V118 L1240 118 L1240 92 L1310 92 L1310 240 Z"/>
+          <!-- h10 -->
+          <path d="M1310 240 V72 L1375 36 L1440 72 L1440 240 Z"/>
+        </g>
+        <!-- dim windows -->
+        <g fill="#E8A85A">
+          <rect class="lit-dim" x="40" y="150" width="22" height="30" opacity=".28"/>
+          <rect class="lit-dim" x="178" y="120" width="20" height="28" opacity=".22" style="animation-delay:1.4s"/>
+          <rect class="lit-dim" x="320" y="150" width="20" height="28" opacity=".3" style="animation-delay:2s"/>
+          <rect class="lit-dim" x="620" y="150" width="20" height="28" opacity=".25" style="animation-delay:.6s"/>
+          <rect class="lit-dim" x="760" y="120" width="20" height="28" opacity=".3" style="animation-delay:3s"/>
+          <rect class="lit-dim" x="980" y="150" width="20" height="28" opacity=".2" style="animation-delay:1.1s"/>
+          <rect class="lit-dim" x="1230" y="155" width="20" height="26" opacity=".26" style="animation-delay:2.4s"/>
+          <rect class="lit-dim" x="1350" y="120" width="20" height="28" opacity=".24" style="animation-delay:1.8s"/>
+        </g>
+        <!-- the one window lit for you -->
+        <g>
+          <ellipse class="glow-main" cx="500" cy="150" rx="120" ry="90" fill="url(#warm)"/>
+          <rect class="lit-main" x="470" y="120" width="28" height="40" fill="#F2C98A"/>
+          <rect class="lit-main" x="502" y="120" width="28" height="40" fill="#F2C98A"/>
+          <line x1="500" y1="120" x2="500" y2="160" stroke="#0C1815" stroke-width="2"/>
+        </g>
+        <defs>
+          <radialGradient id="warm"><stop offset="0%" stop-color="rgba(242,201,138,.55)"/><stop offset="100%" stop-color="rgba(242,201,138,0)"/></radialGradient>
+        </defs>
+      </svg>
+    </div>
+  </section>
+
+  <!-- why lodge -->
+  <section class="why">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Why not just SpareRoom</span>
+        <h2>A listing site sells you a room. Lodge introduces you to a home.</h2>
+        <p>Sharing a house is far more about the people than the square footage. The mainstream sites can't tell you whether you'll actually belong there. We're built around exactly that question.</p>
+      </div>
+      <div class="pillars">
+        <div class="pillar">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM22 21v-2a4 4 0 00-3-3.87M16 3.13A4 4 0 0119 7a4 4 0 01-3 3.87" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>People, not just rooms</h3>
+          <p>Every house describes its rhythm — who lives there, whether they eat together, the kind of week it is. You choose a household, not a floor plan.</p>
+          <span class="vs">SpareRoom shows you price and postcode.</span>
+        </div>
+        <div class="pillar">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>Verified, not anonymous</h3>
+          <p>Both sides verify their identity before they can message. No throwaway accounts, no catfish, no "is this person even real".</p>
+          <span class="vs">Vetting is the product, not an add-on.</span>
+        </div>
+        <div class="pillar">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+          <h3>Anchored in a church</h3>
+          <p>A house can name the church it's part of. Where that church is a Lodge partner, the church itself confirms its own homes — a grounding a swipe-app simply can't fake.</p>
+          <span class="vs">Confirmed by the church, not a faceless tickbox.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- how it works -->
+  <section class="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow light">How it works</span>
+        <h2>Four steps from spare room to settled in.</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="n">Step one</span><h4>Verify who you are</h4><p>A two-minute ID check, whichever side you're on. It only has to happen once.</p></div>
+        <div class="step"><span class="n">Step two</span><h4>Browse real households</h4><p>Filter by city, budget, tradition and the rhythm of the house — not just the rent.</p></div>
+        <div class="step"><span class="n">Step three</span><h4>Message and meet</h4><p>Start a conversation, then arrange a viewing. We send safe-meeting guidance with every intro.</p></div>
+        <div class="step"><span class="n">Step four</span><h4>Move in well</h4><p>We point you to trusted lodger-agreement guidance from Shelter and Citizens Advice, so everyone's clear from day one.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- featured rooms -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head" style="display:flex;justify-content:space-between;align-items:flex-end;max-width:100%;gap:20px;flex-wrap:wrap">
+        <div style="max-width:520px">
+          <span class="eyebrow">Rooms with the light on</span>
+          <h2>A few houses looking for someone right now.</h2>
+        </div>
+        <a class="btn btn-line btn-sm" onclick="go('browse')">See all rooms</a>
+      </div>
+      <div class="grid" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <!-- for churches strip -->
+  <section class="how" style="padding:70px 0">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap">
+      <div style="max-width:560px">
+        <span class="eyebrow light">For church leaders</span>
+        <h2 style="color:var(--stone);font-size:clamp(26px,3.4vw,38px);margin-top:12px">Your people move house. Help them land somewhere they'll thrive.</h2>
+        <p style="color:rgba(236,230,216,.75);margin-top:16px;font-size:17px">Become a verified Lodge church and your spare rooms and newcomers find each other inside your own community first.</p>
+      </div>
+      <a class="btn btn-lamp" onclick="go('churches')">See church partnerships</a>
+    </div>
+  </section>
+</main>
+
+<!-- ============ BROWSE ============ -->
+<div id="browse" class="view">
+  <div class="browse-top">
+    <div class="wrap">
+      <span class="eyebrow light">Find a room</span>
+      <h1 style="margin-top:14px">Rooms in Christian households across the UK.</h1>
+      <p>Every house here has been ID-verified. Homes from partner churches are confirmed by that church directly; others name their church themselves. Filter down to the ones that fit how you actually want to live.</p>
+    </div>
+  </div>
+  <div class="filters">
+    <div class="wrap filters-inner">
+      <div class="fgroup">
+        <label for="f-city">City</label>
+        <select id="f-city" onchange="applyFilters()">
+          <option value="">All cities</option>
+        </select>
+      </div>
+      <div class="fgroup">
+        <label for="f-rent">Max rent</label>
+        <select id="f-rent" onchange="applyFilters()">
+          <option value="9999">Any budget</option>
+          <option value="450">Up to £450</option>
+          <option value="550">Up to £550</option>
+          <option value="650">Up to £650</option>
+          <option value="800">Up to £800</option>
+        </select>
+      </div>
+      <div class="fgroup">
+        <label for="f-stage">Who it suits</label>
+        <select id="f-stage" onchange="applyFilters()">
+          <option value="">Anyone</option>
+          <option>Students</option>
+          <option>Young professionals</option>
+          <option>Any age welcome</option>
+          <option>Family setting</option>
+        </select>
+      </div>
+      <div class="fgroup">
+        <label for="f-pref">Room for</label>
+        <select id="f-pref" onchange="applyFilters()">
+          <option value="">Anyone</option>
+          <option>Women only</option>
+          <option>Men only</option>
+        </select>
+      </div>
+      <div class="fgroup" style="flex:1;min-width:230px">
+        <label>Tradition</label>
+        <div class="chips" id="f-tradition"></div>
+      </div>
+      <span class="result-count" id="result-count"></span>
+    </div>
+  </div>
+  <div class="browse-body">
+    <div class="wrap">
+      <div class="grid" id="browse-grid"></div>
+      <div class="empty" id="browse-empty" style="display:none">
+        <h3>No houses match that just yet.</h3>
+        <p>Try widening your budget or clearing a filter — Lodge is young, and new houses are added every week.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DETAIL ============ -->
+<div id="detail" class="view">
+  <div class="detail-hero">
+    <div class="wrap">
+      <a class="back" onclick="go('browse')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        All rooms
+      </a>
+      <div class="detail-window" id="detail-window"></div>
+      <div class="detail-head" style="padding-bottom:36px">
+        <span class="loc" id="d-loc"></span>
+        <h1 id="d-title"></h1>
+      </div>
+    </div>
+  </div>
+  <div class="detail-body">
+    <div class="wrap detail-grid">
+      <div>
+        <div class="block">
+          <h3>From the household</h3>
+          <p id="d-blurb"></p>
+        </div>
+        <div class="block">
+          <h3>The rhythm of the house</h3>
+          <ul class="rhythm" id="d-rhythm"></ul>
+        </div>
+        <div class="block">
+          <h3>The room</h3>
+          <div class="specs" id="d-specs"></div>
+        </div>
+        <div class="block">
+          <h3>Who lives here</h3>
+          <p id="d-household"></p>
+        </div>
+      </div>
+      <aside>
+        <div class="side">
+          <div class="side-card">
+            <div class="rentbig" id="d-rent"></div>
+            <div class="avail" id="d-avail"></div>
+            <button class="btn btn-lamp" onclick="toast('In the real product this opens a verified message thread with the household.')">Message the household</button>
+            <button class="btn btn-line" onclick="toast('Saved. You\'d find this under your shortlist.')">Save this room</button>
+            <div class="church-badge" id="d-church"></div>
+            <div class="safety-mini">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+              <span id="d-veri-text"></span>
+            </div>
+            <div class="safety-mini" style="margin-top:10px">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Want reassurance? You can <a onclick="toast('A request goes to a past housemate, who chooses whether to vouch. No public scores, ever.')" style="color:var(--clay);font-weight:600;cursor:pointer;text-decoration:underline">ask for a reference</a> from someone who's lived here before.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LIST A ROOM ============ -->
+<div id="list" class="view">
+  <div class="browse-top">
+    <div class="wrap">
+      <span class="eyebrow light">List a room</span>
+      <h1 style="margin-top:14px">Open your spare room to someone who'll fit.</h1>
+      <p>Tell us about the household, not just the room. The better you describe your week, the better the people who get in touch.</p>
+    </div>
+  </div>
+  <div style="padding:54px 0 90px">
+    <div class="wrap form-wrap">
+      <div class="price-banner">
+        <div>
+          <div class="big">£15 per listing</div>
+          <p>Live for 90 days, or until you've found your person. No subscription, no auto-renew.</p>
+        </div>
+        <a class="btn btn-lamp btn-sm" onclick="toast('Partner churches confirm their own homes and list free. We\'d connect you to yours here.')">My church is a Lodge partner</a>
+      </div>
+      <div class="form-card">
+        <div class="field">
+          <label>Where's the room? <span class="hint">— city and area</span></label>
+          <div class="field-row">
+            <input type="text" placeholder="e.g. Cardiff" />
+            <input type="text" placeholder="e.g. Canton" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Give the room a one-line title</label>
+          <input type="text" placeholder="e.g. Double room in a settled house near the park" />
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Rent per month</label><input type="text" placeholder="£" /></div>
+          <div class="field"><label>Available from</label><input type="text" placeholder="e.g. Early August" /></div>
+        </div>
+        <div class="field">
+          <label>Are bills included?</label>
+          <div class="switch-row">
+            <span class="lab">Bills included in the rent
+              <small id="bills-state">Off — lodger pays a share of bills on top</small></span>
+            <div class="switch" role="switch" aria-checked="false" tabindex="0" id="bills-switch"
+              onclick="toggleBills()" onkeypress="if(event.key==='Enter'||event.key===' ')toggleBills()"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Who is the room for?</label>
+          <div class="seg-pref" id="gender-pref">
+            <button class="on" onclick="setGenderPref('Either',this)">Either welcome</button>
+            <button onclick="setGenderPref('Women only',this)">Women only</button>
+            <button onclick="setGenderPref('Men only',this)">Men only</button>
+          </div>
+          <p class="hint" style="margin-top:8px">For a lodger sharing your home or facilities, specifying a sex is generally allowed — but confirm this for your situation. We're not a substitute for legal advice.</p>
+        </div>
+        <div class="field">
+          <label>What's your church? <span class="hint">— we'll confirm directly with them</span></label>
+          <input type="text" placeholder="e.g. St Catherine's, Canton" />
+        </div>
+        <div class="field">
+          <label>Describe the rhythm of your house</label>
+          <textarea placeholder="Do you eat together? Pray together? Is it a quiet house or a lively one? Who's already living there?"></textarea>
+        </div>
+        <div class="field">
+          <label>Who would suit the room?</label>
+          <select>
+            <option>Young professionals</option>
+            <option>Students</option>
+            <option>Any age welcome</option>
+            <option>Family setting</option>
+          </select>
+        </div>
+        <button class="btn btn-lamp" style="width:100%;justify-content:center" onclick="toast('In the real product, the next step is your two-minute ID check.')">Continue to verification</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TRUST & SAFETY ============ -->
+<div id="trust" class="view">
+  <section class="church-hero" style="padding:80px 0">
+    <div class="wrap lede-block">
+      <span class="eyebrow light">Trust &amp; safety</span>
+      <h1 style="margin-top:14px">You're choosing who to live with. We don't take that lightly.</h1>
+      <p class="big-lede">Most listing sites treat safety as a checkbox. For Lodge it's the whole reason to exist. Here's exactly what we do, and what we ask of you.</p>
+    </div>
+  </section>
+  <section style="padding:80px 0">
+    <div class="wrap">
+      <div class="twocol">
+        <div class="feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+          <h3>Identity, verified both ways</h3>
+          <p>Nobody can message or be messaged until they've passed an ID check. It applies to the person with the room and the person looking for one — trust has to run in both directions.</p>
+        </div>
+        <div class="feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+          <h3>Church-confirmed, where it counts</h3>
+          <p>Lodge doesn't cold-call a parish office about every listing — that's a promise no small team could keep. Instead, partner churches confirm their own homes, because the people who actually know someone are better placed to vouch than we are. Other listings name their church themselves, and we show that plainly as self-declared, never dressed up as a check we didn't do.</p>
+        </div>
+        <div class="feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM22 21v-2a4 4 0 00-3-3.87M16 3.13A4 4 0 0119 7a4 4 0 01-3 3.87" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>References, not ratings</h3>
+          <p>We don't do public star ratings — a tanked score in your own church world does more harm than good. Instead, a past housemate can vouch for someone on request, like a rental reference. It tells you the thing a badge never could: what they were actually like to live with.</p>
+        </div>
+        <div class="feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>People moderate, every day</h3>
+          <p>Listings are read by a person before they go live, and you can report anything that feels off in two taps. Our safeguarding policy is published in full — no small print.</p>
+        </div>
+      </div>
+      <div class="church-badge" style="margin-top:40px;padding:24px 28px">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <div>
+          <div class="t">Before every first viewing</div>
+          <div class="n" style="font-weight:500;font-size:15.5px;line-height:1.5;margin-top:4px">We send the same short guidance to everyone: meet in daylight first, tell someone where you're going, and trust your instinct. No room is worth ignoring it.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ FOR CHURCHES ============ -->
+<div id="churches" class="view">
+  <section class="church-hero" style="padding:80px 0">
+    <div class="wrap lede-block">
+      <span class="eyebrow light">For churches</span>
+      <h1 style="margin-top:14px">Housing is pastoral. Lodge gives your community a way to do it well.</h1>
+      <p class="big-lede">People arrive in your city and need somewhere to live. People in your pews have a spare room and would love the right lodger. Lodge helps them find each other inside your community — safely, and without it all running through one exhausted person's WhatsApp.</p>
+    </div>
+  </section>
+  <section style="padding:80px 0">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Partnership</span>
+        <h2>Two ways to be part of it.</h2>
+      </div>
+      <div class="tier-grid">
+        <div class="tier">
+          <div class="price-tag">Free</div>
+          <h3>Recommend Lodge</h3>
+          <p style="color:var(--ink-soft);font-size:15px;margin-top:6px">Point your community to Lodge as a trusted resource. Costs nothing.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Listed as a recommended resource</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Newcomers' pack with a Lodge intro</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Members verify and list as normal</li>
+          </ul>
+          <button class="btn btn-line" style="width:100%;justify-content:center" onclick="toast('We\'d send you a simple resource pack to share.')">Get the resource pack</button>
+        </div>
+        <div class="tier feature">
+          <div class="price-tag">£20<small> / month</small></div>
+          <h3>Church-confirmed partner</h3>
+          <p style="color:var(--ink-soft);font-size:15px;margin-top:6px">You confirm your own community's homes — and a badge room-seekers trust on sight.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> You confirm and manage your community's listings</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> The <b>church-confirmed</b> badge on every one of them</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Members list their rooms free</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Your own branded page, your people shown each other first</li>
+          </ul>
+          <button class="btn btn-lamp" style="width:100%;justify-content:center" onclick="toast('A real conversation with your leadership would start here.')">Talk to us about partnering</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="word">Lodge</span>
+        <p>Christian houseshares across the UK, built around the people you'd actually be living with.</p>
+      </div>
+      <div>
+        <h4>Find a home</h4>
+        <a onclick="go('browse')">Browse rooms</a>
+        <a onclick="go('list')">List a room</a>
+        <a onclick="go('browse')">Cities</a>
+      </div>
+      <div>
+        <h4>Trust</h4>
+        <a onclick="go('trust')">How we verify</a>
+        <a onclick="go('trust')">Safeguarding</a>
+        <a onclick="go('trust')">Safe viewings</a>
+      </div>
+      <div>
+        <h4>Churches</h4>
+        <a onclick="go('churches')">Partner with Lodge</a>
+        <a onclick="go('churches')">Resource pack</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Lodge — a prototype. Not a live service.</span>
+      <span>Made for people looking for somewhere to belong.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ SAVED VIEW ============ -->
+<div id="saved" class="view">
+  <div class="saved-head">
+    <div class="wrap">
+      <span class="eyebrow light">Your shortlist</span>
+      <h1 style="margin-top:14px">Rooms you've saved.</h1>
+      <p id="saved-sub">The houses you come back to. Sign in to keep them and get a nudge when something similar appears.</p>
+    </div>
+  </div>
+  <div style="padding:40px 0 90px">
+    <div class="wrap">
+      <div class="grid" id="saved-grid"></div>
+      <div class="empty" id="saved-empty">
+        <h3>Nothing saved yet.</h3>
+        <p>Tap the heart on any room to keep it here while you weigh things up.</p>
+        <div style="margin-top:20px"><a class="btn btn-line btn-sm" onclick="go('browse')">Browse rooms</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AUTH MODAL ============ -->
+<div class="modal-bg" id="auth-modal" onclick="if(event.target===this)closeAuth()">
+  <div class="modal">
+    <button class="x" onclick="closeAuth()" aria-label="Close">×</button>
+    <h2 id="auth-title">Welcome back</h2>
+    <p class="sub" id="auth-sub">Sign in to save rooms and message households.</p>
+    <div class="seg" id="auth-seg">
+      <button class="on" onclick="authMode('in')" id="seg-in">Sign in</button>
+      <button onclick="authMode('up')" id="seg-up">Create account</button>
+    </div>
+    <div id="auth-role" style="display:none;margin-bottom:18px">
+      <div class="seg-pref">
+        <button class="on" id="role-find" onclick="setRole('find')">I'm looking for a room</button>
+        <button id="role-list" onclick="setRole('list')">I've got a room</button>
+      </div>
+    </div>
+    <div class="field"><label style="font-size:13px;font-weight:700;display:block;margin-bottom:7px">Email</label>
+      <input type="email" placeholder="you@example.com"></div>
+    <div class="field" id="name-field" style="display:none"><label style="font-size:13px;font-weight:700;display:block;margin-bottom:7px">First name</label>
+      <input type="text" placeholder="e.g. Jon"></div>
+    <button class="btn btn-lamp" style="width:100%;justify-content:center;margin-top:6px" onclick="doAuth()" id="auth-go">Sign in</button>
+    <p class="demo-note">This is a prototype. A real version would send a secure sign-in link to your email — no password to forget — and verify your ID before you can message anyone.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- accounts (mocked, in-session) ---------------- */
+let SIGNED_IN=false;
+let authView='in', authRole='find';
+const SAVED=new Set();
+
+function openAuth(mode){authMode(mode||'in');document.getElementById('auth-modal').classList.add('show');}
+function closeAuth(){document.getElementById('auth-modal').classList.remove('show');}
+function authMode(m){
+  authView=m;
+  document.getElementById('seg-in').classList.toggle('on',m==='in');
+  document.getElementById('seg-up').classList.toggle('on',m==='up');
+  document.getElementById('auth-title').textContent = m==='in'?'Welcome back':'Create your account';
+  document.getElementById('auth-sub').textContent = m==='in'
+    ? 'Sign in to save rooms and message households.'
+    : 'One account, whether you\u2019re looking for a room or offering one.';
+  document.getElementById('auth-role').style.display = m==='up'?'block':'none';
+  document.getElementById('name-field').style.display = m==='up'?'block':'none';
+  document.getElementById('auth-go').textContent = m==='in'?'Sign in':'Create account';
+}
+function setRole(r){
+  authRole=r;
+  document.getElementById('role-find').classList.toggle('on',r==='find');
+  document.getElementById('role-list').classList.toggle('on',r==='list');
+}
+function doAuth(){
+  SIGNED_IN=true;
+  closeAuth();
+  document.getElementById('nav-cta-guest').classList.add('off');
+  document.getElementById('nav-user').classList.add('on');
+  updateSavedCount();
+  renderSaved();
+  toast(authView==='up'
+    ? 'Account created. In the real product, the next step is your <b>ID check</b>.'
+    : 'Signed in. Your saved rooms and messages would live here.');
+}
+function signOut(){
+  SIGNED_IN=false;
+  document.getElementById('nav-cta-guest').classList.remove('off');
+  document.getElementById('nav-user').classList.remove('on');
+  renderSaved();
+  toast('Signed out.');
+}
+
+/* ---------------- save / shortlist ---------------- */
+function toggleSave(id){
+  if(SAVED.has(id)){SAVED.delete(id);} else {SAVED.add(id);}
+  updateSavedCount();
+  // refresh any visible grids so hearts stay in sync
+  applyFilters();
+  document.getElementById('featured-grid').innerHTML=LISTINGS.slice(0,3).map(cardHTML).join('');
+  renderSaved();
+  if(!SIGNED_IN && SAVED.size===1){
+    toast('Saved for this visit. <b>Sign in</b> to keep your shortlist and get match alerts.');
+  }
+}
+function updateSavedCount(){
+  document.getElementById('saved-count').textContent=SAVED.size;
+  document.getElementById('saved-count-2').textContent=SAVED.size;
+}
+function renderSaved(){
+  const grid=document.getElementById('saved-grid');
+  const empty=document.getElementById('saved-empty');
+  const items=LISTINGS.filter(l=>SAVED.has(l.id));
+  grid.innerHTML=items.map(cardHTML).join('');
+  empty.style.display=items.length?'none':'block';
+  document.getElementById('saved-sub').textContent = SIGNED_IN
+    ? 'Saved to your account. We\u2019d email you when a similar room is listed.'
+    : 'The houses you come back to. Sign in to keep them and get a nudge when something similar appears.';
+}
+
+/* ---------------- form toggles ---------------- */
+function toggleBills(){
+  const s=document.getElementById('bills-switch');
+  const on=s.getAttribute('aria-checked')==='true';
+  s.setAttribute('aria-checked',(!on).toString());
+  document.getElementById('bills-state').textContent = !on
+    ? 'On — all bills covered in the rent' : 'Off — lodger pays a share of bills on top';
+}
+function setGenderPref(v,el){
+  [...el.parentNode.children].forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ---------------- data ---------------- */
+const TRADITIONS = ['Anglican','Baptist','Catholic','Pentecostal','Methodist','Non-denominational'];
+const LISTINGS = [
+  {id:1,city:'Cardiff',area:'Canton',title:'Double room in a settled house near Victoria Park',rent:560,bills:'Most bills included',deposit:560,available:'Early August',roomType:'Double, furnished',tradition:'Anglican',church:"St Catherine's, Canton",churchVerified:true,stage:'Young professionals',dbs:false,pref:'Either',
+    rhythm:['We eat together most weeknights','A shared lift to the 10am service','Happy to have your friends round'],
+    household:'Three of us, late 20s to early 30s — two work in the NHS, one teaches secondary maths.',
+    blurb:"We're an easy-going house that values a proper evening meal and a kitchen that doesn't descend into chaos. We're not after anything in particular beyond someone who'll muck in, and who's glad of a slow Sunday before church up the road."},
+  {id:2,city:'Bristol',area:'Bishopston',title:'Light single in a creative, lively household',rent:520,bills:'Bills on top, split four ways',deposit:520,available:'September',roomType:'Single, furnished',tradition:'Pentecostal',church:'Woodlands Church',churchVerified:true,stage:'Young professionals',dbs:false,pref:'Either',
+    rhythm:['Friday night is open-house for dinner','Worship night in the front room midweek','A garden that gets a lot of use'],
+    household:'A noisy, warm house of four — a graphic designer, a nurse, a youth worker and a charity fundraiser.',
+    blurb:"Fair warning: this is not a quiet house. There's usually music on and someone in the kitchen. If you'd find that life-giving rather than exhausting, you'll fit right in."},
+  {id:3,city:'London',area:'Walthamstow',title:'Double in a calm flat for someone who works hard and rests well',rent:780,bills:'Bills included',deposit:780,available:'Now',roomType:'Double, unfurnished',tradition:'Anglican',church:"St Michael's, Walthamstow",churchVerified:true,stage:'Young professionals',dbs:false,pref:'Either',
+    rhythm:['A quiet, restful home','We pray together on Sunday evenings','Respectful of each other’s space'],
+    household:'Two of us in our early 30s — a junior doctor and a software engineer, both fairly introverted.',
+    blurb:"We work demanding jobs and we've made this flat somewhere to genuinely switch off. Looking for a third who values calm and won't mind that we're not always up for socialising after a long week."},
+  {id:4,city:'Sheffield',area:'Crookes',title:'Room in a student house, walkable to the uni',rent:430,bills:'Bills included',deposit:430,available:'September',roomType:'Double, furnished',tradition:'Non-denominational',church:'Network Church Sheffield',churchVerified:true,stage:'Students',dbs:false,pref:'Women only',
+    rhythm:['We do a house meal once a week','Most of us are part of the same CU','Revision-friendly during exams'],
+    household:'Five students — a mix of second and third years doing engineering, medicine and history.',
+    blurb:"A genuinely friendly Christian student house with one room going as someone heads off on a placement year. We look out for each other without living in each other's pockets."},
+  {id:5,city:'Manchester',area:'Chorlton',title:'Spare room with a family — a gentle, full house',rent:480,bills:'Bills included',deposit:480,available:'Early August',roomType:'Single, furnished',tradition:'Baptist',church:'Ivy Church, Manchester',churchVerified:true,stage:'Family setting',dbs:true,pref:'Either',
+    rhythm:['Family dinner at 6, you’re always welcome','Two young children, so early starts','Sunday mornings are a happy scramble'],
+    household:'A family of four — two parents in their late 30s and two children aged 5 and 8.',
+    blurb:"We've a room we'd love to offer to someone, perhaps newly arrived in the city or starting out, who'd appreciate being folded into family life rather than living alone. It's a busy, kind, slightly chaotic home."},
+  {id:6,city:'Leeds',area:'Headingley',title:'Double in a house of young professionals finding their feet',rent:540,bills:'Bills on top',deposit:540,available:'Now',roomType:'Double, furnished',tradition:'Anglican',church:'St George’s, Leeds',churchVerified:false,stage:'Young professionals',dbs:false,pref:'Men only',
+    rhythm:['Casual shared meals, no rota','We host a fortnightly small group','Big on Sunday roasts'],
+    household:'Four of us, mid-20s — a teacher, an accountant, a physio and a charity worker.',
+    blurb:"A friendly, low-drama house that's a bit beyond the student years but still figuring life out. The room's a good size and gets the morning light. We've named our church ourselves — it isn't a Lodge partner, so it shows as self-declared."},
+  {id:7,city:'Birmingham',area:'Selly Oak',title:'Single room, quiet street, near the hospital',rent:460,bills:'Bills included',deposit:460,available:'September',roomType:'Single, furnished',tradition:'Catholic',church:'St Mary’s, Selly Oak',churchVerified:true,stage:'Any age welcome',dbs:false,pref:'Either',
+    rhythm:['A peaceful, prayerful home','Daily Mass is a short walk away','We share the cooking some evenings'],
+    household:'Two housemates — one in their 40s, one in their 50s, both working in healthcare.',
+    blurb:"A settled, prayerful house that would suit someone of any age looking for somewhere steady and quiet. We're not looking to fill every evening with company, just to share a home well."},
+  {id:8,city:'Cardiff',area:'Roath',title:'Double room in a house that loves having people round',rent:520,bills:'Most bills included',deposit:520,available:'Now',roomType:'Double, furnished',tradition:'Pentecostal',church:'Citizen Church, Cardiff',churchVerified:true,stage:'Young professionals',dbs:false,pref:'Either',
+    rhythm:['Sunday lunch is a proper event','We’re part of the same church plant','Always a kettle on'],
+    household:'Three of us in our late 20s — all involved in the same church, working in design, teaching and the NHS.',
+    blurb:"We're a hospitable house, properly into the life of our church, and we'd love a fourth who's up for being part of that. The room's bright and the area's full of decent coffee."},
+  {id:9,city:'London',area:'Tooting',title:'Single in a friendly, diverse flatshare',rent:720,bills:'Bills included',deposit:720,available:'Early August',roomType:'Single, furnished',tradition:'Non-denominational',church:'Kingdom Life Church',churchVerified:true,stage:'Young professionals',dbs:false,pref:'Women only',
+    rhythm:['We come from a few different churches','Shared meal on Sunday evenings','Easy-going about comings and goings'],
+    household:'Four of us in our late 20s and early 30s, from different church backgrounds and a few different countries.',
+    blurb:"A warm, easy flatshare where people happen to share a faith but come from all over. We don't all do everything together, but Sunday dinner is sacred and the kitchen's always open."}
+];
+
+/* ---------------- card window art ---------------- */
+function windowArt(seed,big){
+  // a small lit-window facade, deterministic-ish by seed
+  const lit = (seed*37)%5;
+  const cols = 3, rows = 2, cells=[];
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const i=r*cols+c;
+    const on = (i===lit) || ((seed+i)%4===0);
+    cells.push({x:18+c*32,y:30+r*46,on});
+  }
+  const rects = cells.map(p=>
+    `<rect x="${p.x}" y="${p.y}" width="24" height="34" rx="2" fill="${p.on?'#F2C98A':'#16302A'}" opacity="${p.on?(0.7+((seed%3)*0.1)):0.5}"/>`
+  ).join('');
+  const glowCell = cells[lit];
+  return `<svg viewBox="0 0 120 152" preserveAspectRatio="xMidYMid slice">
+    <defs><radialGradient id="cg${seed}"><stop offset="0%" stop-color="rgba(242,201,138,.5)"/><stop offset="100%" stop-color="rgba(242,201,138,0)"/></radialGradient></defs>
+    <ellipse cx="${glowCell.x+12}" cy="${glowCell.y+17}" rx="46" ry="40" fill="url(#cg${seed})"/>
+    ${rects}
+  </svg>`;
+}
+function detailWindowArt(seed){
+  let facade='';
+  for(let r=0;r<3;r++)for(let c=0;c<6;c++){
+    const i=r*6+c; const on=((seed+i)%3===0);
+    facade+=`<rect x="${40+c*70}" y="${50+r*72}" width="44" height="56" rx="3" fill="${on?'#F2C98A':'#16302A'}" opacity="${on?0.78:0.5}"/>`;
+  }
+  return `<svg viewBox="0 0 480 280" preserveAspectRatio="xMidYMid slice">
+    <defs><radialGradient id="dg"><stop offset="0%" stop-color="rgba(242,201,138,.4)"/><stop offset="100%" stop-color="rgba(242,201,138,0)"/></radialGradient></defs>
+    <ellipse cx="240" cy="140" rx="260" ry="160" fill="url(#dg)"/>
+    ${facade}
+  </svg>`;
+}
+
+/* ---------------- render cards ---------------- */
+function cardHTML(l){
+  const prefTag = l.pref && l.pref!=='Either' ? `<span class="tag pref">${l.pref}</span>` : '';
+  const tags=[`<span class="tag">${l.tradition}</span>`,`<span class="tag">${l.stage}</span>`,prefTag].join('');
+  const veri=[];
+  veri.push(`<span class="veri"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>ID verified</span>`);
+  if(l.churchVerified){ veri.push(`<span class="veri"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Church-confirmed</span>`); }
+  else { veri.push(`<span class="veri" style="color:var(--ink-soft)"><svg viewBox="0 0 24 24" fill="none" style="opacity:.6"><path d="M3 21h18M5 21V8l7-5 7 5v13" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Church self-declared</span>`); }
+  const isSaved = SAVED.has(l.id);
+  return `<article class="card" onclick="openDetail(${l.id})" role="button" tabindex="0" onkeypress="if(event.key==='Enter')openDetail(${l.id})">
+    <div class="card-window">
+      <button class="save-btn ${isSaved?'saved':''}" onclick="event.stopPropagation();toggleSave(${l.id})" aria-label="Save room">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.29 1.51 4.04 3 5.5l7 7 7-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="price">£${l.rent}<small>/m</small></span>
+      ${windowArt(l.id,false)}
+    </div>
+    <div class="card-body">
+      <span class="card-loc">${l.area}, ${l.city}</span>
+      <h3>${l.title}</h3>
+      <div class="meta">${l.roomType} · ${l.bills} · ${l.available}</div>
+      <div class="tags">${tags}</div>
+      <div class="verirow">${veri.join('')}</div>
+    </div>
+  </article>`;
+}
+
+/* ---------------- filters ---------------- */
+let activeTraditions=new Set();
+function initFilters(){
+  const cities=[...new Set(LISTINGS.map(l=>l.city))].sort();
+  const sel=document.getElementById('f-city');
+  cities.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+  const tc=document.getElementById('f-tradition');
+  TRADITIONS.forEach(t=>{
+    const b=document.createElement('button');
+    b.className='chip';b.textContent=t;b.setAttribute('aria-pressed','false');
+    b.onclick=()=>{
+      if(activeTraditions.has(t)){activeTraditions.delete(t);b.setAttribute('aria-pressed','false');}
+      else{activeTraditions.add(t);b.setAttribute('aria-pressed','true');}
+      applyFilters();
+    };
+    tc.appendChild(b);
+  });
+}
+function applyFilters(){
+  const city=document.getElementById('f-city').value;
+  const rent=+document.getElementById('f-rent').value;
+  const stage=document.getElementById('f-stage').value;
+  const pref=document.getElementById('f-pref').value;
+  const filtered=LISTINGS.filter(l=>
+    (!city||l.city===city) &&
+    (l.rent<=rent) &&
+    (!stage||l.stage===stage) &&
+    (!pref || l.pref===pref || l.pref==='Either') &&
+    (activeTraditions.size===0||activeTraditions.has(l.tradition))
+  );
+  const grid=document.getElementById('browse-grid');
+  const empty=document.getElementById('browse-empty');
+  grid.innerHTML=filtered.map(cardHTML).join('');
+  empty.style.display=filtered.length?'none':'block';
+  document.getElementById('result-count').textContent=
+    filtered.length+(filtered.length===1?' house':' houses');
+}
+
+/* ---------------- detail ---------------- */
+function openDetail(id){
+  const l=LISTINGS.find(x=>x.id===id);
+  document.getElementById('detail-window').innerHTML=detailWindowArt(l.id);
+  document.getElementById('d-loc').textContent=`${l.area}, ${l.city}`;
+  document.getElementById('d-title').textContent=l.title;
+  document.getElementById('d-blurb').textContent=l.blurb;
+  document.getElementById('d-household').textContent=l.household;
+  document.getElementById('d-rhythm').innerHTML=l.rhythm.map(r=>
+    `<li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>${r}</li>`).join('');
+  document.getElementById('d-specs').innerHTML=[
+    ['Room',l.roomType],['Bills',l.bills],['Deposit','£'+l.deposit],['Available',l.available],
+    ['Tradition',l.tradition],['Room for',l.pref==='Either'?'Anyone welcome':l.pref]
+  ].map(([k,v])=>`<div class="spec"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  document.getElementById('d-rent').innerHTML=`£${l.rent}<small> / month</small>`;
+  document.getElementById('d-avail').textContent='Available '+l.available.toLowerCase();
+  const cb=document.getElementById('d-church');
+  if(l.churchVerified){
+    cb.style.display='flex';
+    cb.style.background='var(--dusk)';cb.style.color='var(--stone)';
+    cb.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <div><div class="t">Church-confirmed</div><div class="n">${l.church} — confirmed by the church</div></div>`;
+  } else {
+    cb.style.display='flex';
+    cb.style.background='var(--stone-deep)';cb.style.color='var(--ink)';
+    cb.innerHTML=`<svg viewBox="0 0 24 24" fill="none" style="color:var(--ink-soft)"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <div><div class="t" style="color:var(--ink-soft)">Church self-declared</div><div class="n">${l.church} — named by the household, not confirmed by Lodge</div></div>`;
+  }
+  const vt=[]; vt.push('identity-verified');
+  vt.push(l.churchVerified ? 'church-confirmed by '+l.church : 'self-declared as part of '+l.church);
+  document.getElementById('d-veri-text').textContent='This household is '+vt.join(', and ')+'.';
+  go('detail');
+}
+
+/* ---------------- routing ---------------- */
+function go(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(view).classList.add('active');
+  document.querySelectorAll('[data-nav]').forEach(a=>
+    a.classList.toggle('active',a.dataset.nav===view));
+  window.scrollTo(0,0);
+}
+
+/* ---------------- stars ---------------- */
+function initStars(){
+  const c=document.getElementById('stars');let s='';
+  for(let i=0;i<40;i++){
+    const x=Math.random()*100,y=Math.random()*55,r=Math.random()*1.6+0.4,o=Math.random()*0.5+0.2;
+    s+=`<span style="position:absolute;left:${x}%;top:${y}%;width:${r}px;height:${r}px;border-radius:50%;background:#F2C98A;opacity:${o}"></span>`;
+  }
+  c.innerHTML=s;
+}
+
+/* ---------------- toast ---------------- */
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3600);
+}
+
+/* ---------------- init ---------------- */
+initFilters();
+initStars();
+applyFilters();
+updateSavedCount();
+renderSaved();
+document.getElementById('featured-grid').innerHTML=LISTINGS.slice(0,3).map(cardHTML).join('');
+</script>
+</body>
+</html>
